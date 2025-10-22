@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Çekim Asistanı - Chat Mode</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/components.css">
+    <link rel="stylesheet" href="/static/css/chat.css">
+
+    <style>
+        /* Full-screen layout */
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            background: var(--bg-white);
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+        }
+
+        .mode-toggle a {
+            background: rgba(255, 255, 255, 0.95);
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .mode-toggle a:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mode Toggle -->
+    <div class="mode-toggle">
+        <a href="/">📋 Klasik Mod</a>
+    </div>
+
+    <!-- Chat Container -->
+    <div class="chat-container">
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <h2>AI Çekim Asistanı</h2>
+            <p>Ürün fotoğrafı için yaratıcı fikirler ve görsel promptları</p>
+        </div>
+
+        <!-- Chat Messages -->
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here dynamically -->
+        </div>
+
+        <!-- Chat Input -->
+        <div class="chat-input-container">
+            <button class="chat-model-btn" id="chatModelBtn" title="AI Modelini Değiştir">
+                🤖 <span id="currentModelName">Model</span>
+            </button>
+            <button class="chat-upload-btn" id="chatUploadBtn" title="Fotoğraf yükle">
+                📸
+            </button>
+            <input
+                type="file"
+                id="chatUploadInput"
+                accept="image/*"
+                style="display: none;"
+            >
+            <input
+                type="text"
+                class="chat-input"
+                id="chatInput"
+                placeholder="Mesajınızı yazın..."
+            >
+            <button class="chat-send-btn" id="chatSendBtn">
+                ➤
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script defer src="/static/js/api.js"></script>
+    <script defer src="/static/js/chat.js"></script>
+</body>
+</html>

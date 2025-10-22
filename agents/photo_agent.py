@@ -1,6 +1,7 @@
 import json
 from typing import Any
 from services import OpenAIService
+from config.style_templates import get_style_template, get_category_guidelines
 
 
 class ProductPhotoAgent:
@@ -16,12 +17,13 @@ class ProductPhotoAgent:
     def __init__(self, openai_service: OpenAIService):
         self.openai = openai_service
 
-    def detect_product(self, image_data_url: str) -> dict[str, Any]:
+    async def detect_product(self, image_data_url: str, model: str = None) -> dict[str, Any]:
         """
         Step 1: Detect product from image using vision model.
 
         Args:
             image_data_url: Base64 data URL of the image
+            model: Optional AI model to use (overrides default)
 
         Returns:
             Dictionary with product details:
@@ -62,19 +64,22 @@ class ProductPhotoAgent:
             ],
         }
 
-        response = self.openai.chat_completion([system_msg, user_msg])
+        response = await self.openai.chat_completion([system_msg, user_msg], model=model)
         return self.openai.extract_json(response)
 
-    def suggest_ideas(
-        self, product: str, category: str, attributes: list[str]
+    async def suggest_ideas(
+        self, product: str, category: str, attributes: list[str], style: str = None, model_preference: str = None, model: str = None
     ) -> dict[str, Any]:
         """
-        Step 2: Generate creative shoot ideas based on product.
+        Step 2: Generate creative shoot ideas based on product, style, and model preference.
 
         Args:
             product: Product name
             category: Product category
             attributes: List of product attributes
+            style: Optional style key (minimal, luxury, lifestyle, decorative, etc.)
+            model_preference: Optional model preference ('with_model' or 'without_model')
+            model: Optional AI model to use (overrides default)
 
         Returns:
             Dictionary with ideas array:
@@ -91,17 +96,67 @@ class ProductPhotoAgent:
                 ]
             }
         """
+        # Get style template if provided
+        style_guide = ""
+        if style:
+            template = get_style_template(style)
+            style_guide = f"""
+STYLE GUIDELINES ({template['name_tr']}):
+- Ton: {template['tone']}
+- Aydınlatma: {template['lighting']}
+- Arka plan: {template['background']}
+- Aksesuarlar: {template['props']}
+- Anahtar kelimeler: {', '.join(template['keywords'])}
+
+Tüm fikirler bu stil rehberine uygun olmalı.
+"""
+
+        # Add model preference guidance
+        model_guide = ""
+        if model_preference == "with_model":
+            model_guide = """
+MODEL PREFERENCE:
+- Çekimlerde İNSAN MODELİ kullan
+- Modelin ürünü nasıl kullandığını veya taşıdığını göster
+- Lifestyle çekimler öner (model ürünle etkileşimde)
+- Eller, gövde veya tam vücut gösterilebilir
+- Gerçek kullanım senaryolarını vurgula
+
+"""
+        elif model_preference == "without_model":
+            model_guide = """
+MODEL PREFERENCE:
+- Çekimlerde İNSAN MODELİ KULLANMA
+- Sadece ürün odaklı çekimler öner
+- Ürünü stillize et, dekore et veya kompozisyon içine yerleştir
+- Flatlay, tabletop veya product-only setup'lar kullan
+- Ürün detaylarını ve özelliklerini öne çıkar
+
+"""
+
+        # Get category guidelines
+        cat_guide = get_category_guidelines(category)
+        category_guide = f"""
+KATEGORI BEST PRACTICES ({category}):
+- Odak noktası: {cat_guide['focus']}
+- Gösterilmesi gerekenler: {', '.join(cat_guide['must_show'])}
+- Kaçınılması gerekenler: {cat_guide['avoid']}
+"""
+
         system_msg = {
             "role": "system",
             "content": (
                 "You are a creative product photography director. "
-                "Generate commercially viable, distinct shoot concepts. "
+                "Generate commercially viable, distinct shoot concepts following the given guidelines. "
                 "Return ONLY valid JSON, no additional text."
             ),
         }
 
         user_text = (
             "Ürüne özel 5 farklı çekim fikri öner. Her fikir benzersiz ve ticari açıdan değerli olmalı.\n"
+            f"{style_guide}\n"
+            f"{model_guide}\n"
+            f"{category_guide}\n"
             "Sadece JSON döndür. Şema:\n"
             "{\n"
             '  "ideas": [\n'
@@ -121,19 +176,20 @@ class ProductPhotoAgent:
 
         user_msg = {"role": "user", "content": user_text}
 
-        response = self.openai.chat_completion([system_msg, user_msg])
+        response = await self.openai.chat_completion([system_msg, user_msg], model=model)
         return self.openai.extract_json(response)
 
-    def build_shot_plan(
-        self, product: str, selected_idea: dict[str, Any], count: int
+    async def build_shot_plan(
+        self, product: str, selected_idea: dict[str, Any], count: int, model: str = None
     ) -> dict[str, Any]:
         """
-        Step 3: Generate detailed shot plans for selected idea.
+        Step 3: Generate image generation prompts for selected idea.
 
         Args:
             product: Product name
             selected_idea: The chosen idea dictionary
-            count: Number of shots to generate
+            count: Number of prompts to generate
+            model: Optional AI model to use (overrides default)
 
         Returns:
             Dictionary with shots array:
@@ -142,13 +198,8 @@ class ProductPhotoAgent:
                     {
                         "index": 1,
                         "title": str,
-                        "camera": {"angle": str, "lens": str, "aperture": str},
-                        "lighting": str,
-                        "background": str,
-                        "props": str,
-                        "composition": str,
-                        "instructions": str,
-                        "gen_prompt": str | None
+                        "style_description": str,
+                        "gen_prompt": str
                     },
                     ...
                 ]
@@ -157,41 +208,33 @@ class ProductPhotoAgent:
         system_msg = {
             "role": "system",
             "content": (
-                "You are a senior photo art director with expertise in commercial product photography. "
-                "Create detailed, actionable shot plans that are distinct and professionally viable. "
+                "You are an expert AI image generation prompt engineer specializing in product photography. "
+                "Create detailed, effective prompts for tools like DALL-E, Midjourney, or Stable Diffusion. "
                 "Return ONLY valid JSON, no additional text."
             ),
         }
 
         user_text = (
-            "Seçilen fikir için detaylı çekim planları üret. Her plan birbirinden farklı ve profesyonel olmalı.\n"
+            "Seçilen fikir için görüntü üretim promptları oluştur. Her prompt birbirinden farklı ve etkili olmalı.\n"
             "Sadece JSON döndür. Şema:\n"
             "{\n"
             '  "shots": [\n'
             "    {\n"
             '      "index": 1,\n'
             '      "title": "kısa başlık",\n'
-            '      "camera": {\n'
-            '        "angle": "açı (örn: 45 derece, top-down, eye-level)",\n'
-            '        "lens": "lens (örn: 50mm, 85mm)",\n'
-            '        "aperture": "diyafram (örn: f/2.8, f/8)"\n'
-            "      },\n"
-            '      "lighting": "ışıklandırma kurulumu detaylı açıklama",\n'
-            '      "background": "arkaplan/ortam detayı",\n'
-            '      "props": "aksesuarlar veya none",\n'
-            '      "composition": "kompozisyon kuralları",\n'
-            '      "instructions": "adım adım çekim talimatları",\n'
-            '      "gen_prompt": "opsiyonel: görüntü üretim prompt\'u"\n'
+            '      "style_description": "stil ve estetik açıklaması (örn: minimalist beyaz arka plan, dramatic lighting)",\n'
+            '      "gen_prompt": "detaylı görüntü üretim prompt\'u (İngilizce, DALL-E/Midjourney formatında)"\n'
             "    }\n"
             "  ]\n"
             "}\n\n"
             f"Ürün: {product}\n"
             f"Seçilen Fikir: {json.dumps(selected_idea, ensure_ascii=False)}\n"
             f"İstenen Adet: {count}\n\n"
-            "Her çekim planı benzersiz varyasyon içermeli (açı, ışık, kompozisyon farklılıkları)."
+            "Her prompt benzersiz açı, stil, ışık ve kompozisyon içermeli. "
+            "gen_prompt alanı İngilizce ve çok detaylı olmalı (ürün detayı, açı, ışık, ortam, stil, kalite anahtar kelimeleri)."
         )
 
         user_msg = {"role": "user", "content": user_text}
 
-        response = self.openai.chat_completion([system_msg, user_msg])
+        response = await self.openai.chat_completion([system_msg, user_msg], model=model)
         return self.openai.extract_json(response)

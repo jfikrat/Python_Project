@@ -6,7 +6,7 @@ AI-powered agentic workflow for product photo shoot planning using OpenAI.
 
 - **Product Detection**: Upload a product image to automatically identify product name, category, and attributes
 - **Creative Ideas**: Get 5 professional shoot concept suggestions tailored to your product
-- **Shot Planning**: Generate detailed, actionable photography plans with camera settings, lighting, composition, and step-by-step instructions
+- **Image Generation Prompts**: Generate ready-to-use prompts for DALL-E, Midjourney, or Stable Diffusion with style descriptions
 
 ## Architecture
 
@@ -85,11 +85,11 @@ curl -X POST "http://localhost:8000/api/detect" \
 }
 ```
 
-#### 2. Generate Shot Plans
+#### 2. Generate Image Prompts
 
 **Endpoint:** `POST /api/plan`
 
-**Description:** Generate detailed shot plans based on a selected idea.
+**Description:** Generate image generation prompts based on a selected idea.
 
 **Request Body:**
 ```json
@@ -118,18 +118,9 @@ curl -X POST "http://localhost:8000/api/plan" \
   "shots": [
     {
       "index": 1,
-      "title": "Hero Angle",
-      "camera": {
-        "angle": "45 derece",
-        "lens": "50mm",
-        "aperture": "f/2.8"
-      },
-      "lighting": "Softbox sol, rim light sağ",
-      "background": "Beyaz seamless",
-      "props": "Koşu bandı",
-      "composition": "Diagonal leading lines",
-      "instructions": "1. Ayakkabıyı 45 derece açıyla yerleştir...",
-      "gen_prompt": "white sneaker on treadmill, 45 degree angle, soft lighting"
+      "title": "Hero Angle Dynamic Shot",
+      "style_description": "Dramatic lighting with motion blur, athletic aesthetic",
+      "gen_prompt": "professional product photography of white Nike Air Max sneaker on black treadmill, 45 degree angle, dramatic rim lighting from right, soft key light from left, shallow depth of field, motion blur effect, athletic lifestyle aesthetic, high contrast, studio quality, commercial photography --ar 4:5 --style raw"
     }
   ]
 }
@@ -156,11 +147,11 @@ curl -X POST "http://localhost:8000/api/plan" \
    ↓
 3. AI generates 5 creative shoot ideas
    ↓
-4. User selects an idea & specifies shot count
+4. User selects an idea & specifies prompt count
    ↓
-5. AI generates detailed shot plans
+5. AI generates image generation prompts
    ↓
-6. User receives actionable photography instructions
+6. User receives ready-to-use prompts for AI image generation tools
 ```
 
 ## Configuration
@@ -182,7 +173,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ### Project Structure:
 
-- **agents/photo_agent.py**: Core agentic logic (3-step workflow)
+- **agents/photo_agent.py**: Core agentic logic (3-step workflow: detect → ideas → prompts)
 - **services/openai_service.py**: OpenAI API wrapper
 - **services/image_service.py**: Image validation & processing
 - **api/models.py**: Pydantic schemas for requests/responses

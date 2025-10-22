@@ -41,27 +41,31 @@ class ImageService:
         return True, None
 
     @staticmethod
-    def to_base64_data_url(file_content: bytes, filename: str) -> str:
+    def to_base64_data_url(file_content: bytes, filename: str = None, mime_type: str = None) -> str:
         """
         Convert image bytes to base64 data URL for OpenAI API.
 
         Args:
             file_content: Raw image bytes
-            filename: Original filename (for MIME type detection)
+            filename: Original filename (for MIME type detection, optional if mime_type provided)
+            mime_type: Explicit MIME type (e.g., "image/jpeg"). If provided, overrides filename detection.
 
         Returns:
             Data URL string (data:image/jpeg;base64,...)
         """
-        ext = os.path.splitext(filename)[1].lower()
-
-        # Determine MIME type
-        mime_mapping = {
-            ".jpg": "image/jpeg",
-            ".jpeg": "image/jpeg",
-            ".png": "image/png",
-            ".webp": "image/webp",
-        }
-        mime_type = mime_mapping.get(ext, "image/jpeg")
+        # If MIME type not provided, detect from filename
+        if mime_type is None:
+            if filename is None:
+                mime_type = "image/jpeg"  # Default fallback
+            else:
+                ext = os.path.splitext(filename)[1].lower()
+                mime_mapping = {
+                    ".jpg": "image/jpeg",
+                    ".jpeg": "image/jpeg",
+                    ".png": "image/png",
+                    ".webp": "image/webp",
+                }
+                mime_type = mime_mapping.get(ext, "image/jpeg")
 
         # Encode to base64
         b64_string = base64.b64encode(file_content).decode("utf-8")

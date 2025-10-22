@@ -21,6 +21,7 @@ class ProductDetectionResponse(BaseModel):
     attributes: list[str] = Field(..., description="Product attributes")
     confidence: int = Field(..., ge=0, le=100, description="Detection confidence (0-100)")
     ideas: list[IdeaSuggestion] = Field(..., description="Suggested shoot ideas")
+    session_id: str = Field(..., description="Session ID for storing idea details")
 
 
 class PlanRequest(BaseModel):
@@ -29,30 +30,17 @@ class PlanRequest(BaseModel):
     product: str = Field(..., description="Product name")
     idea_id: str = Field(..., description="Selected idea ID (e.g., I1)")
     count: int = Field(..., ge=1, le=12, description="Number of shots to generate")
-
-
-class CameraSettings(BaseModel):
-    """Camera settings for a shot."""
-
-    angle: str = Field(..., description="Camera angle (e.g., 45 derece, top-down)")
-    lens: str = Field(..., description="Lens focal length (e.g., 50mm)")
-    aperture: str = Field(..., description="Aperture setting (e.g., f/2.8)")
+    session_id: str = Field(..., description="Session ID to retrieve idea details")
+    ai_model: str | None = Field(None, description="Optional AI model to use")
 
 
 class ShotPlan(BaseModel):
-    """Detailed plan for a single shot."""
+    """Image generation prompt with metadata."""
 
     index: int = Field(..., ge=1, description="Shot number")
     title: str = Field(..., description="Short descriptive title")
-    camera: CameraSettings = Field(..., description="Camera configuration")
-    lighting: str = Field(..., description="Lighting setup description")
-    background: str = Field(..., description="Background/environment details")
-    props: str = Field(..., description="Props and accessories (or 'none')")
-    composition: str = Field(..., description="Composition guidelines")
-    instructions: str = Field(..., description="Step-by-step shooting instructions")
-    gen_prompt: str | None = Field(
-        None, description="Optional image generation prompt"
-    )
+    style_description: str = Field(..., description="Style and aesthetic description")
+    gen_prompt: str = Field(..., description="Image generation prompt for DALL-E/Midjourney/SD")
 
 
 class PlanResponse(BaseModel):
