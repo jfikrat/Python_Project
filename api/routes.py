@@ -97,6 +97,7 @@ async def detect_product(
             "category": product_data["category"],
             "attributes": product_data.get("attributes", []),
             "ideas": ideas_data.get("ideas", []),
+            "model_preference": model_preference,  # Store for shot plan generation
         }
         session_id = session_service.create_session(session_data)
         logger.info(f"Created session {session_id} with {len(ideas_data.get('ideas', []))} ideas")
@@ -154,8 +155,13 @@ async def generate_plan(request: PlanRequest):
 
         logger.info(f"Retrieved idea '{selected_idea.get('title')}' from session")
 
+        # Retrieve model preference from session
+        model_preference = session_data.get("model_preference")
+
         # Generate image generation prompts (async)
         log_msg = f"Generating {request.count} prompts for idea '{selected_idea.get('title')}'"
+        if model_preference:
+            log_msg += f" with model preference: {model_preference}"
         if request.ai_model:
             log_msg += f" using {request.ai_model}"
         logger.info(log_msg)
@@ -164,6 +170,7 @@ async def generate_plan(request: PlanRequest):
             product=request.product,
             selected_idea=selected_idea,
             count=request.count,
+            model_preference=model_preference,
             model=request.ai_model
         )
 

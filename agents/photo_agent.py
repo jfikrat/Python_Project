@@ -115,12 +115,26 @@ Tüm fikirler bu stil rehberine uygun olmalı.
         model_guide = ""
         if model_preference == "with_model":
             model_guide = """
-MODEL PREFERENCE:
-- Çekimlerde İNSAN MODELİ kullan
-- Modelin ürünü nasıl kullandığını veya taşıdığını göster
-- Lifestyle çekimler öner (model ürünle etkileşimde)
-- Eller, gövde veya tam vücut gösterilebilir
-- Gerçek kullanım senaryolarını vurgula
+MODEL ZORUNLULUĞU - ÇOK ÖNEMLİ:
+- 5 FİKRİN TAMAMINDA İNSAN MODELİ OLMALIDIR
+- Her fikir, modelin ürünle aktif etkileşimini ön plana çıkarmalı
+- Fikirler model OLMADAN çekilemez olmalı (sadece ürün değil, lifestyle/insanın hikayesi)
+- Model sadece aksesuar değil, hikayenin merkezinde olmalı
+
+Zorunlu Çeşitlilik:
+- En az 2 farklı cinsiyet perspektifi (kadın/erkek)
+- En az 2 farklı yaş grubu (genç yetişkin 20-30 / olgun 35-50)
+- Farklı kullanım senaryoları (işe gidiş, alışveriş, gece çıkışı, hafta sonu, seyahat)
+- Farklı model-ürün etkileşimleri (omuzda, elde, açık, kapalı, içinden çıkan eşya)
+
+Her Fikrin İçermesi Gerekenler:
+- Model karakterizasyonu (yaş, stil, karakter)
+- Spesifik senaryo (nerede, ne zaman, neden)
+- Model aktivitesi (ne yapıyor, nasıl hissediyor)
+- Ürün kullanım şekli (model ürünle nasıl etkileşimde)
+
+Kötü Örnek (model opsiyonel): "Minimalist beyaz arka planda çanta, soft light"
+İyi Örnek (model zorunlu): "25 yaşında kadın, sabah işe giderken metrodan inerken, çantayı omuzdan alıp içinden telefon çıkarıyor, acele ve enerji dolu"
 
 """
         elif model_preference == "without_model":
@@ -180,7 +194,7 @@ KATEGORI BEST PRACTICES ({category}):
         return self.openai.extract_json(response)
 
     async def build_shot_plan(
-        self, product: str, selected_idea: dict[str, Any], count: int, model: str = None
+        self, product: str, selected_idea: dict[str, Any], count: int, model_preference: str = None, model: str = None
     ) -> dict[str, Any]:
         """
         Step 3: Generate image generation prompts for selected idea.
@@ -189,6 +203,7 @@ KATEGORI BEST PRACTICES ({category}):
             product: Product name
             selected_idea: The chosen idea dictionary
             count: Number of prompts to generate
+            model_preference: Optional model preference ('with_model' or 'without_model')
             model: Optional AI model to use (overrides default)
 
         Returns:
@@ -214,8 +229,172 @@ KATEGORI BEST PRACTICES ({category}):
             ),
         }
 
+        # Build model guidance section
+        model_guide = ""
+        if model_preference == "with_model":
+            model_guide = """
+MODELLİ ÇEKİM REHBERİ:
+gen_prompt içinde aşağıdaki alanları MUTLAKA ekle:
+1. Model Tipi: cinsiyet ve yaş aralığı (örn: "25-30 year old woman", "mature male model")
+2. Model Styling: kıyafet tarzı, renk paleti, aksesuarlar (örn: "wearing elegant black dress", "casual denim and white shirt")
+3. Saç & Makyaj: saç stili ve makyaj tarifi (örn: "sleek updo, natural makeup", "messy bun, bold red lips")
+4. İfade & Poz: yüz ifadesi, duruş, hareket (örn: "confident stance, slight smile", "relaxed pose, looking away")
+5. Ürünle Etkileşim: model ürünü nasıl tutuyor/kullanıyor (örn: "holding bag elegantly by handle", "wearing watch on left wrist")
+6. Kamera Açısı: kadraj tipi (örn: "half-body shot", "close-up portrait", "full-body environmental")
+7. Ortam & Atmosfer: çekim ortamı ve mood (örn: "upscale urban cafe, warm afternoon light", "minimalist studio, dramatic shadows")
+
+ÇEŞİTLİLİK ZORUNLULUĞU - HER SHOT FARKLI OLMALI:
+
+Cinsiyet Dağılımı (istenen shot sayısına göre dengele):
+- En az 1 erkek model (örn: "35 year old man", "young male professional")
+- En az 1 kadın model (örn: "28 year old woman", "mature female")
+- Gerisi mix olabilir
+
+Yaş Çeşitliliği (istenen shot sayısına göre):
+- Young adult: 20-28 (örn: "22 year old", "mid-twenties")
+- Professional: 28-40 (örn: "30-35 year old", "mature professional")
+- Mature: 40+ (örn: "45 year old", "mature elegant")
+
+Etnik/Fiziksel Çeşitlilik:
+- Farklı ten renkleri belirt (light skin, medium skin tone, dark skin)
+- Farklı saç tipleri (straight, wavy, curly, textured)
+- Farklı vücut tipleri ima edilebilir (tall slender, athletic, curvy)
+
+Stil Varyasyonu (HER SHOT FARKLI OLMALI):
+Shot 1: Professional/business (suit, blazer, corporate)
+Shot 2: Casual/everyday (jeans, sweater, relaxed)
+Shot 3: Elegant/upscale (dress, refined, sophisticated)
+Shot 4: Urban/edgy (streetwear, modern, bold)
+Shot 5+: Creative/unique (artistic, eclectic, personalized)
+
+Her prompt'ta model açıklaması ŞU FORMATTA OLMALI:
+"[age range] year old [gender], [ethnicity/skin tone], [hair type & style], [clothing style], [expression & activity]"
+
+Örnek: "28-32 year old woman, medium skin tone, sleek straight black hair in ponytail, wearing minimalist grey blazer and white shirt, confident smile while checking phone"
+"""
+        elif model_preference == "without_model":
+            model_guide = """
+SADECE ÜRÜN ODAKLI ÇEKİM:
+- Model veya insan unsuru KULLANMA
+- Ürünü flatlay, tabletop veya stilize kompozisyonlarla göster
+- Ürün detaylarını ve özelliklerini vurgula
+- Props ve dekoratif elementlerle kompozisyon oluştur
+"""
+
+        # Add camera language variations for technical diversity
+        camera_guide = """
+KAMERA & TEKNİK ÇEŞİTLİLİK:
+gen_prompt içinde profesyonel fotoğrafçılık terminolojisi kullan. Her shot farklı olmalı:
+
+Lens Seçenekleri (her shot'ta farklı lens belirt):
+- 50mm f/1.8 (klasik portre, doğal perspektif)
+- 85mm f/1.4 (sıkıştırılmış bokeh, portre)
+- 35mm f/2 (environmental, context)
+- 24mm f/2.8 (geniş açı, lifestyle)
+- 100mm macro f/2.8 (ürün detay, texture)
+- 24-70mm f/2.8 (versatile, commercial)
+
+Diyafram (depth of field için):
+- f/1.4, f/1.8 (shallow DOF, dreamy bokeh)
+- f/2.8, f/4 (balanced, lifestyle)
+- f/8, f/11 (sharp, product detail)
+
+Işık Teknikleri (çeşitli kombinasyonlar):
+- Soft diffused window light
+- Rembrandt lighting (45° açılı, dramatic shadow)
+- Butterfly lighting (overhead soft, flattering)
+- Rim/edge lighting (arka ışık, product outline)
+- Split lighting (profile, dramatic half-face)
+- Natural golden hour light
+- Studio strobe with softbox
+- Continuous LED panel
+- Hard directional light (shadows)
+- Ambient + fill combination
+
+Kamera Açıları (varyasyon şart):
+- Eye-level/straight-on
+- Overhead/flat lay (90°)
+- Low angle (dramatic, powerful)
+- High angle (editorial, documentary)
+- 3/4 view (classic product)
+- Dutch angle/tilted (dynamic)
+- Close-up/macro
+- Environmental wide shot
+
+Kompozisyon Terimleri:
+- Rule of thirds
+- Center framed
+- Negative space emphasis
+- Tight crop
+- Environmental context
+- Leading lines
+- Symmetrical composition
+- Asymmetrical balance
+
+Kalite Anahtar Kelimeleri (her prompt'ta ekle):
+- "professional product photography"
+- "commercial photography"
+- "high resolution, sharp focus"
+- "studio lighting" veya "natural light"
+- "shallow depth of field" veya "tack sharp"
+- "clean background" veya "environmental setting"
+"""
+
+        # Add storytelling triggers for narrative-driven prompts
+        story_guide = """
+HİKAYE ANLATIMI & ATMOSFER:
+Her gen_prompt sadece teknik tarif değil, bir hikaye anlatmalı. Aşağıdaki elementleri kullan:
+
+Zaman & Atmosfer (birini seç):
+- "early morning light, fresh start energy"
+- "golden hour sunset, warm nostalgic mood"
+- "midday bright, energetic vibrant"
+- "blue hour twilight, elegant mysterious"
+- "overcast soft light, calm contemplative"
+- "late afternoon, relaxed weekend vibe"
+
+Duygusal Ton (her shot farklı):
+- Confident & powerful
+- Elegant & sophisticated
+- Playful & spontaneous
+- Calm & minimal
+- Luxurious & aspirational
+- Urban & edgy
+- Warm & inviting
+- Bold & dramatic
+
+Senaryo/Context (model varsa):
+- Commuting to work (bag on shoulder, city background)
+- Weekend cafe moment (relaxed, latte on table)
+- Evening event arrival (dressed up, confident stride)
+- Shopping trip (browsing, casual joy)
+- Travel departure (airport, excitement)
+- Park stroll (natural, carefree)
+- Office to dinner transition (versatile styling)
+- Art gallery visit (cultured, thoughtful)
+
+Detay Vurgusu (her shot 1-2 tanesini öne çıkar):
+- Texture closeup (suede, leather grain)
+- Hardware detail (zipper, buckle, clasp)
+- Stitching & craftsmanship
+- Shape & silhouette
+- How it sits/hangs when worn
+- Interior organization (open bag shot)
+- Size comparison (next to common object)
+- Color richness in different light
+
+Prompt Yapısı Örneği:
+"[MODEL DESCRIPTION], [PRODUCT INTERACTION], [SCENARIO/CONTEXT], [LIGHTING], [CAMERA SPECS], [EMOTIONAL TONE], [COMPOSITION], professional product photography, high resolution"
+
+Örnek:
+"25-30 year old woman in minimalist beige trench coat, holding brown suede hobo bag casually by handle, walking through modern glass lobby, soft diffused morning light from floor-to-ceiling windows, shot with 50mm f/2, calm confident energy, rule of thirds composition, professional product photography, sharp focus, shallow depth of field"
+"""
+
         user_text = (
             "Seçilen fikir için görüntü üretim promptları oluştur. Her prompt birbirinden farklı ve etkili olmalı.\n"
+            f"{model_guide}\n"
+            f"{camera_guide}\n"
+            f"{story_guide}\n"
             "Sadece JSON döndür. Şema:\n"
             "{\n"
             '  "shots": [\n'
