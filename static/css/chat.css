@@ -98,6 +98,11 @@
     word-wrap: break-word;
 }
 
+/* Message text - preserve whitespace and line breaks */
+.message-text {
+    white-space: pre-wrap;
+}
+
 /* AI Message Bubble - Glass Effect */
 .chat-message.ai .message-bubble {
     background: var(--glass-bg);
@@ -432,7 +437,6 @@
 /* === TYPEWRITER EFFECT === */
 .typewriter {
     overflow: hidden;
-    white-space: pre-wrap;
     min-width: 180px;
     display: block;
 }

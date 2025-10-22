@@ -167,14 +167,14 @@ function renderMessage(message) {
 
     if (message.content) {
         const textNode = document.createElement('div');
+        textNode.className = 'message-text';  // Add class for white-space: pre-wrap
+        bubble.appendChild(textNode);  // Add to DOM first so parentElement exists
 
         if (message.useTypewriter && message.type === 'ai') {
             typewriterEffect(textNode, message.content);
         } else {
             textNode.textContent = message.content;
         }
-
-        bubble.appendChild(textNode);
     }
 
     // Add quick action buttons if provided
