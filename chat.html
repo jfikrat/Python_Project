@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,8 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/effects.css">
+    <link rel="stylesheet" href="/static/css/themes/theme-toggle.css">
     <link rel="stylesheet" href="/static/css/components.css">
     <link rel="stylesheet" href="/static/css/chat.css">
 
@@ -17,38 +19,20 @@
             padding: 0;
             overflow: hidden;
             height: 100%;
-            background: var(--bg-white);
-        }
-
-        .mode-toggle {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
-        }
-
-        .mode-toggle a {
-            background: rgba(255, 255, 255, 0.95);
-            color: #667eea;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .mode-toggle a:hover {
-            background: white;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
     </style>
 </head>
 <body>
-    <!-- Mode Toggle -->
-    <div class="mode-toggle">
-        <a href="/">📋 Klasik Mod</a>
+    <!-- Theme Controls -->
+    <div class="theme-controls">
+        <a href="/" class="mode-link">
+            <i data-lucide="layout-grid"></i>
+            <span>Klasik Mod</span>
+        </a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <i data-lucide="sun" class="theme-icon sun-icon"></i>
+            <i data-lucide="moon" class="theme-icon moon-icon"></i>
+        </button>
     </div>
 
     <!-- Chat Container -->
@@ -66,11 +50,17 @@
 
         <!-- Chat Input -->
         <div class="chat-input-container">
-            <button class="chat-model-btn" id="chatModelBtn" title="AI Modelini Değiştir">
-                🤖 <span id="currentModelName">Model</span>
-            </button>
+            <select class="chat-model-dropdown" id="chatModelDropdown" title="AI Modelini Seç">
+                <option value="">Model seçin...</option>
+                <option value="gpt-4o-mini">⚡ GPT-4o Mini (ÖNERİLEN)</option>
+                <option value="gpt-4.1-mini">🔥 GPT-4.1 Mini</option>
+                <option value="gpt-5-mini">🧪 GPT-5 Mini (DENEYSEL)</option>
+                <option value="gpt-5">🧪 GPT-5 (DENEYSEL)</option>
+                <option value="gpt-5-nano">🧪 GPT-5 Nano (DENEYSEL)</option>
+                <option value="o4-mini">🧪 o4-mini (DENEYSEL)</option>
+            </select>
             <button class="chat-upload-btn" id="chatUploadBtn" title="Fotoğraf yükle">
-                📸
+                <i data-lucide="camera"></i>
             </button>
             <input
                 type="file"
@@ -85,13 +75,23 @@
                 placeholder="Mesajınızı yazın..."
             >
             <button class="chat-send-btn" id="chatSendBtn">
-                ➤
+                <i data-lucide="send"></i>
             </button>
         </div>
     </div>
 
     <!-- JavaScript -->
+    <script src="/static/js/theme-manager.js"></script>
     <script defer src="/static/js/api.js"></script>
     <script defer src="/static/js/chat.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize Lucide icons after DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

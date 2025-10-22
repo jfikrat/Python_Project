@@ -1,27 +1,32 @@
 /* ==========================================
    COMPONENTS
    Buttons, cards, tags, loading, errors
+   Monochromatic grey design with minimal blue accent
    ========================================== */
 
-/* Card */
+/* === CARD === */
 .card {
-    background: var(--bg-white);
+    background: var(--glass-bg-heavy);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
     border-radius: var(--radius-xl);
-    padding: 30px;
+    padding: var(--spacing-xl);
     box-shadow: var(--shadow-lg);
-    margin-bottom: 30px;
+    margin-bottom: var(--spacing-xl);
     animation: fadeIn 0.5s ease;
+    border: 1px solid var(--border-primary);
 }
 
-/* Buttons */
+/* === BUTTONS === */
 .btn {
     border: none;
     cursor: pointer;
-    font-size: 1em;
+    font-size: var(--font-size-base);
     font-weight: 600;
     transition: var(--transition);
-    border-radius: 25px;
-    padding: 12px 30px;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-family: var(--font-system);
 }
 
 .btn:disabled {
@@ -29,32 +34,35 @@
     cursor: not-allowed;
 }
 
+/* Primary Button (Blue Gradient) */
 .generate-btn {
-    background: var(--gradient-primary);
-    color: var(--text-white);
-    padding: 15px 40px;
-    font-size: 1.1em;
-    border-radius: 25px;
+    background: var(--gradient-accent);
+    color: white;
+    padding: var(--spacing-md) var(--spacing-2xl);
+    font-size: var(--font-size-lg);
+    border-radius: var(--radius-xl);
     border: none;
     cursor: pointer;
     transition: var(--transition);
     font-weight: 600;
+    box-shadow: var(--shadow-accent);
 }
 
 .generate-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    box-shadow: var(--shadow-lg), var(--shadow-accent);
 }
 
+/* Reset Button (Grey) */
 .reset-btn {
-    background: var(--error-color);
-    color: var(--text-white);
-    padding: 12px 30px;
-    border-radius: 25px;
-    border: none;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-radius: var(--radius-xl);
     cursor: pointer;
-    font-size: 1em;
-    margin-top: 30px;
+    font-size: var(--font-size-base);
+    margin-top: var(--spacing-xl);
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -63,106 +71,118 @@
 }
 
 .reset-btn:hover {
-    background: #ee5a5a;
+    background: var(--bg-tertiary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: var(--shadow-md);
+    border-color: var(--accent-primary);
 }
 
+/* Copy Button */
 .copy-btn {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-white);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 8px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 0.9em;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
     cursor: pointer;
     transition: var(--transition);
     font-weight: 500;
 }
 
 .copy-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    background: var(--accent-primary);
+    color: white;
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-accent);
 }
 
 .copy-btn.copied {
-    background: var(--success-color);
-    border-color: var(--success-color);
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
 }
 
-/* Idea Cards */
+/* === IDEA CARDS === */
 .idea-card {
-    border: 2px solid var(--border-light);
+    border: 2px solid var(--border-primary);
     border-radius: var(--radius-lg);
-    padding: 20px;
+    padding: var(--spacing-lg);
     cursor: pointer;
     transition: var(--transition);
     position: relative;
-    background: var(--bg-white);
+    background: var(--bg-tertiary);
 }
 
 .idea-card:hover {
-    border-color: var(--primary-color);
-    box-shadow: var(--shadow-primary);
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-accent);
     transform: translateY(-5px);
+    background: var(--bg-elevated);
 }
 
 .idea-card.selected {
-    border-color: var(--primary-color);
-    background: var(--bg-light);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    border-color: var(--accent-primary);
+    background: var(--accent-light);
+    box-shadow: var(--shadow-accent);
 }
 
 .idea-card .idea-id {
     position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--primary-color);
-    color: var(--text-white);
-    width: 30px;
-    height: 30px;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--gradient-accent);
+    color: white;
+    width: 35px;
+    height: 35px;
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 0.9em;
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-accent);
 }
 
 .idea-card h4 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-sm);
     color: var(--text-primary);
+    padding-right: var(--spacing-2xl);
 }
 
 .idea-card p {
     color: var(--text-secondary);
-    margin-bottom: 10px;
+    margin-bottom: var(--spacing-sm);
     line-height: 1.6;
 }
 
-/* Tags & Keywords */
+/* === TAGS & KEYWORDS === */
 .keyword {
-    background: #e8eaf6;
-    color: var(--primary-color);
-    padding: 5px 12px;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: var(--spacing-xs) var(--spacing-md);
     border-radius: var(--radius-lg);
-    font-size: 0.85em;
+    font-size: var(--font-size-xs);
     display: inline-block;
+    border: 1px solid var(--border-primary);
 }
 
 .meta-item {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 8px 15px;
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    padding: var(--spacing-sm) var(--spacing-md);
     border-radius: var(--radius-xl);
-    font-size: 0.9em;
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--border-primary);
 }
 
-/* Loading Spinner */
+/* === LOADING SPINNER === */
 .loading {
     display: none;
     text-align: center;
-    padding: 40px;
+    padding: var(--spacing-2xl);
 }
 
 .loading.active {
@@ -170,27 +190,86 @@
 }
 
 .spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--primary-color);
+    border: 4px solid var(--border-secondary);
+    border-top: 4px solid var(--accent-primary);
     border-radius: var(--radius-full);
     width: 50px;
     height: 50px;
     animation: spin 1s linear infinite;
-    margin: 0 auto 20px;
+    margin: 0 auto var(--spacing-lg);
 }
 
-/* Error Message */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* === ERROR MESSAGE === */
 .error-message {
     display: none;
-    background: var(--error-color);
-    color: var(--text-white);
-    padding: 15px;
+    background: var(--error);
+    color: white;
+    padding: var(--spacing-md);
     border-radius: var(--radius-md);
-    margin: 20px 0;
+    margin: var(--spacing-lg) 0;
     text-align: center;
     animation: slideDown 0.3s ease;
+    font-weight: 500;
 }
 
 .error-message.active {
     display: block;
+}
+
+/* === SUCCESS MESSAGE === */
+.success-message {
+    background: var(--success);
+    color: white;
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin: var(--spacing-lg) 0;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* === BADGE === */
+.badge {
+    background: var(--accent-primary);
+    color: white;
+    padding: 4px 10px;
+    border-radius: var(--radius-lg);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-success {
+    background: var(--success);
+}
+
+.badge-error {
+    background: var(--error);
+}
+
+.badge-grey {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .card {
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+    }
+
+    .generate-btn {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+
+    .idea-card h4 {
+        font-size: var(--font-size-base);
+    }
 }

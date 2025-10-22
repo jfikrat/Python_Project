@@ -30,8 +30,7 @@ function initChat() {
         sendBtn: document.getElementById('chatSendBtn'),
         uploadBtn: document.getElementById('chatUploadBtn'),
         uploadInput: document.getElementById('chatUploadInput'),
-        modelBtn: document.getElementById('chatModelBtn'),
-        currentModelName: document.getElementById('currentModelName')
+        modelDropdown: document.getElementById('chatModelDropdown')
     };
 
     // Event listeners
@@ -44,10 +43,10 @@ function initChat() {
     });
     chatElements.uploadBtn.addEventListener('click', () => chatElements.uploadInput.click());
     chatElements.uploadInput.addEventListener('change', handleImageUpload);
-    chatElements.modelBtn.addEventListener('click', changeAIModel);
+    chatElements.modelDropdown.addEventListener('change', handleModelSelection);
 
-    // Ask for AI model selection first
-    askAIModelSelection();
+    // Show welcome message
+    showWelcomeMessage();
 }
 
 /**
@@ -92,7 +91,11 @@ function addThinkingMessage(content = "Düşünüyorum...") {
 
     const avatar = document.createElement('div');
     avatar.className = 'message-avatar ai';
-    avatar.textContent = '🤖';
+
+    // Add Lucide icon
+    const icon = document.createElement('i');
+    icon.setAttribute('data-lucide', 'bot');
+    avatar.appendChild(icon);
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble thinking';
@@ -111,6 +114,12 @@ function addThinkingMessage(content = "Düşünüyorum...") {
     messageDiv.appendChild(bubble);
 
     chatElements.messagesContainer.appendChild(messageDiv);
+
+    // Render Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
     scrollToBottom();
 
     return messageDiv;
@@ -136,7 +145,11 @@ function renderMessage(message) {
 
     const avatar = document.createElement('div');
     avatar.className = `message-avatar ${message.type}`;
-    avatar.textContent = message.type === 'ai' ? '🤖' : '👤';
+
+    // Add Lucide icon
+    const icon = document.createElement('i');
+    icon.setAttribute('data-lucide', message.type === 'ai' ? 'bot' : 'user');
+    avatar.appendChild(icon);
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
@@ -183,17 +196,67 @@ function renderMessage(message) {
     messageDiv.appendChild(avatar);
     messageDiv.appendChild(bubble);
     chatElements.messagesContainer.appendChild(messageDiv);
+
+    // Render Lucide icons
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
 }
 
 /**
- * Typewriter effect for AI messages
+ * Typewriter effect for AI messages with pre-calculated width
  */
 function typewriterEffect(element, text, speed = 30) {
-    let index = 0;
+    if (!text || text.length === 0) return;
+
+    // Get the parent bubble element
+    const bubble = element.parentElement;
+
+    // Create invisible element to measure final text width
+    const measureDiv = document.createElement('div');
+    measureDiv.style.cssText = `
+        position: absolute;
+        visibility: hidden;
+        white-space: pre-wrap;
+        pointer-events: none;
+        left: -9999px;
+        top: -9999px;
+    `;
+
+    // Copy relevant styles from the actual element
+    const computedStyle = window.getComputedStyle(element);
+    measureDiv.style.font = computedStyle.font;
+    measureDiv.style.fontSize = computedStyle.fontSize;
+    measureDiv.style.fontFamily = computedStyle.fontFamily;
+    measureDiv.style.fontWeight = computedStyle.fontWeight;
+    measureDiv.style.lineHeight = computedStyle.lineHeight;
+    measureDiv.style.padding = computedStyle.padding;
+
+    // Copy bubble width constraints
+    const bubbleStyle = window.getComputedStyle(bubble);
+    measureDiv.style.maxWidth = bubbleStyle.maxWidth;
+    measureDiv.style.minWidth = bubbleStyle.minWidth;
+
+    // Set full text to measure
+    measureDiv.textContent = text;
+    document.body.appendChild(measureDiv);
+
+    // Measure the final width
+    const finalWidth = measureDiv.offsetWidth;
+    document.body.removeChild(measureDiv);
+
+    // Lock bubble width to prevent layout shift during typing
+    bubble.style.width = `${finalWidth}px`;
+
+    let index = 1;  // Start from 1 instead of 0
     element.classList.add('typewriter');
+
+    // Show first character immediately
+    element.textContent = text[0];
 
     const cursor = document.createElement('span');
     cursor.className = 'typewriter-cursor';
+    element.appendChild(cursor);
 
     function type() {
         if (index < text.length) {
@@ -204,10 +267,13 @@ function typewriterEffect(element, text, speed = 30) {
         } else {
             cursor.remove();
             element.classList.remove('typewriter');
+            // Unlock width after typing completes (for responsive)
+            bubble.style.width = '';
         }
     }
 
-    type();
+    // Start typing after initial delay
+    setTimeout(type, speed);
 }
 
 /**
@@ -252,56 +318,19 @@ async function handleImageUpload(e) {
 }
 
 /**
- * Ask user for AI model selection
+ * Show welcome message on chat start
  */
-async function askAIModelSelection() {
-    chatState.waitingFor = 'ai_model';
-    addAIMessage("Merhaba! 👋 Ben senin AI çekim asistanınım.\n\nHangi AI modelini kullanmak istersin? 🤖", {
-        actions: [
-            {
-                label: '⚡ GPT-4o Mini (ÖNERİLEN)',
-                value: 'gpt-4o-mini',
-                callback: (model) => selectAIModel(model),
-                description: '✓ Güvenilir ve hızlı - 2024'
-            },
-            {
-                label: '🔥 GPT-4.1 Mini',
-                value: 'gpt-4.1-mini',
-                callback: (model) => selectAIModel(model),
-                description: '✓ Güçlü ve ekonomik - Nisan 2025'
-            },
-            {
-                label: '🧪 GPT-5 Mini (DENEYSEL)',
-                value: 'gpt-5-mini',
-                callback: (model) => selectAIModel(model),
-                description: '⚠ Henüz API\'de olmayabilir'
-            },
-            {
-                label: '🧪 GPT-5 (DENEYSEL)',
-                value: 'gpt-5',
-                callback: (model) => selectAIModel(model),
-                description: '⚠ En yeni model - API\'de olmayabilir'
-            },
-            {
-                label: '🧪 GPT-5 Nano (DENEYSEL)',
-                value: 'gpt-5-nano',
-                callback: (model) => selectAIModel(model),
-                description: '⚠ Henüz API\'de olmayabilir'
-            },
-            {
-                label: '🧪 o4-mini (DENEYSEL)',
-                value: 'o4-mini',
-                callback: (model) => selectAIModel(model),
-                description: '⚠ Akıl yürütme modeli - Deneysel'
-            }
-        ]
-    });
+function showWelcomeMessage() {
+    addAIMessage("Merhaba! 👋 Ben senin AI çekim asistanınım. Hangi ürünü çekmek istiyorsun? Fotoğrafını yükleyerek başlayalım! 📸\n\n💡 İpucu: Sol alttaki listeden AI modelini seç!");
 }
 
 /**
- * Handle AI model selection
+ * Handle model selection from dropdown
  */
-function selectAIModel(modelKey, showWelcome = true) {
+function handleModelSelection(e) {
+    const modelKey = e.target.value;
+    if (!modelKey) return;
+
     const modelNames = {
         'gpt-5': 'GPT-5',
         'gpt-5-mini': 'GPT-5 Mini',
@@ -313,90 +342,12 @@ function selectAIModel(modelKey, showWelcome = true) {
         'gpt-4o-mini': 'GPT-4o Mini'
     };
 
-    addUserMessage(`${modelNames[modelKey]} modelini seçtim`);
     chatState.aiModel = modelKey;
-    chatState.waitingFor = null;
 
-    // Update model button label
-    updateModelButtonLabel(modelKey);
-
-    // Welcome message after model selection (only on first selection)
-    if (showWelcome) {
-        setTimeout(() => {
-            addAIMessage(`Harika! ${modelNames[modelKey]} ile çalışacağız. Hangi ürünü çekmek istiyorsun? Fotoğrafını yükleyerek başlayalım! 📸`);
-        }, 500);
-    } else {
-        setTimeout(() => {
-            addAIMessage(`Model değiştirildi: ${modelNames[modelKey]} 🔄`);
-        }, 500);
+    // Show selection confirmation if not first time
+    if (chatState.messages.length > 1) {
+        addAIMessage(`Model değiştirildi: ${modelNames[modelKey]} 🔄`);
     }
-}
-
-/**
- * Update model button label with current model name
- */
-function updateModelButtonLabel(modelKey) {
-    const shortNames = {
-        'gpt-5': 'GPT-5',
-        'gpt-5-mini': 'GPT-5 Mini',
-        'gpt-5-nano': 'GPT-5 Nano',
-        'o4-mini': 'o4-mini',
-        'gpt-4.1': 'GPT-4.1',
-        'gpt-4.1-mini': 'GPT-4.1 Mini',
-        'gpt-4.1-nano': 'GPT-4.1 Nano',
-        'gpt-4o-mini': 'GPT-4o Mini'
-    };
-
-    if (chatElements.currentModelName) {
-        chatElements.currentModelName.textContent = shortNames[modelKey] || 'Model';
-    }
-}
-
-/**
- * Change AI model (triggered by model button click)
- */
-function changeAIModel() {
-    chatState.waitingFor = 'ai_model_change';
-    addAIMessage("Hangi AI modelini kullanmak istersin? 🤖", {
-        actions: [
-            {
-                label: '⚡ GPT-4o Mini (ÖNERİLEN)',
-                value: 'gpt-4o-mini',
-                callback: (model) => selectAIModel(model, false),
-                description: '✓ Güvenilir ve hızlı - 2024'
-            },
-            {
-                label: '🔥 GPT-4.1 Mini',
-                value: 'gpt-4.1-mini',
-                callback: (model) => selectAIModel(model, false),
-                description: '✓ Güçlü ve ekonomik - Nisan 2025'
-            },
-            {
-                label: '🧪 GPT-5 Mini (DENEYSEL)',
-                value: 'gpt-5-mini',
-                callback: (model) => selectAIModel(model, false),
-                description: '⚠ Henüz API\'de olmayabilir'
-            },
-            {
-                label: '🧪 GPT-5 (DENEYSEL)',
-                value: 'gpt-5',
-                callback: (model) => selectAIModel(model, false),
-                description: '⚠ En yeni model - API\'de olmayabilir'
-            },
-            {
-                label: '🧪 GPT-5 Nano (DENEYSEL)',
-                value: 'gpt-5-nano',
-                callback: (model) => selectAIModel(model, false),
-                description: '⚠ Henüz API\'de olmayabilir'
-            },
-            {
-                label: '🧪 o4-mini (DENEYSEL)',
-                value: 'o4-mini',
-                callback: (model) => selectAIModel(model, false),
-                description: '⚠ Akıl yürütme modeli - Deneysel'
-            }
-        ]
-    });
 }
 
 /**

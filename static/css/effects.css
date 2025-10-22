@@ -1,0 +1,236 @@
+/* ==========================================
+   EFFECTS & GLASSMORPHISM
+   Backdrop-filter blur effects, iOS-style glass
+   ========================================== */
+
+/* === GLASS EFFECTS === */
+
+/* Light glass - for subtle overlays */
+.glass-light {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+}
+
+/* Heavy glass - for more opaque surfaces */
+.glass-heavy {
+    background: var(--glass-bg-heavy);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+}
+
+/* Glass with shadow */
+.glass-elevated {
+    background: var(--glass-bg-heavy);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+}
+
+/* === FALLBACK FOR UNSUPPORTED BROWSERS === */
+@supports not (backdrop-filter: blur(20px)) {
+    .glass-light,
+    .glass-heavy {
+        background: var(--bg-elevated);
+    }
+}
+
+/* === GLOW EFFECTS === */
+
+/* Accent glow (blue) */
+.glow-accent {
+    box-shadow: var(--shadow-accent);
+}
+
+/* Hover glow */
+.glow-hover:hover {
+    box-shadow: var(--shadow-accent);
+    transform: translateY(-2px);
+    transition: var(--transition);
+}
+
+/* === BLUR UTILITIES === */
+
+/* Backdrop blur levels */
+.blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.blur-md {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.blur-lg {
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+}
+
+.blur-xl {
+    backdrop-filter: blur(32px);
+    -webkit-backdrop-filter: blur(32px);
+}
+
+/* === GRADIENT BORDERS === */
+
+/* Subtle gradient border effect */
+.border-gradient {
+    position: relative;
+    border: 1px solid transparent;
+    background-clip: padding-box;
+}
+
+.border-gradient::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    margin: -1px;
+    border-radius: inherit;
+    background: var(--gradient-surface);
+}
+
+/* === ELEVATION SHADOWS === */
+
+.elevation-1 {
+    box-shadow: var(--shadow-sm);
+}
+
+.elevation-2 {
+    box-shadow: var(--shadow-md);
+}
+
+.elevation-3 {
+    box-shadow: var(--shadow-lg);
+}
+
+.elevation-4 {
+    box-shadow: var(--shadow-xl);
+}
+
+/* === OVERLAY === */
+
+/* Dark overlay for modals */
+.overlay {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Light overlay */
+.overlay-light {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* === FROSTED GLASS CARD === */
+
+.frosted-card {
+    background: var(--glass-bg-heavy);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+/* === SHIMMER EFFECT === */
+
+.shimmer {
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 0%,
+        var(--bg-elevated) 50%,
+        var(--bg-secondary) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* === GRADIENT TEXT === */
+
+.gradient-text {
+    background: var(--gradient-accent);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* === MOBILE OPTIMIZATION === */
+
+@media (max-width: 768px) {
+    /* Reduce blur intensity on mobile for better performance */
+    .glass-light,
+    .glass-heavy {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .blur-sm { backdrop-filter: blur(4px); }
+    .blur-md { backdrop-filter: blur(8px); }
+    .blur-lg { backdrop-filter: blur(12px); }
+    .blur-xl { backdrop-filter: blur(16px); }
+}
+
+/* === ICON UTILITIES === */
+
+/* Base icon sizing - Lucide icons */
+svg[class*="lucide"] {
+    width: 1em;
+    height: 1em;
+    stroke-width: 2;
+    transition: var(--transition-fast);
+}
+
+/* Icon sizing utilities */
+.icon-xs svg { width: 14px; height: 14px; }
+.icon-sm svg { width: 18px; height: 18px; }
+.icon-md svg { width: 24px; height: 24px; }
+.icon-lg svg { width: 32px; height: 32px; }
+.icon-xl svg { width: 40px; height: 40px; }
+
+/* Icon color utilities */
+.icon-primary svg { color: var(--text-primary); }
+.icon-secondary svg { color: var(--text-secondary); }
+.icon-accent svg { color: var(--accent-primary); }
+.icon-muted svg { color: var(--text-tertiary); }
+
+/* Icon hover effects */
+.icon-hover svg {
+    transition: var(--transition);
+}
+
+.icon-hover:hover svg {
+    color: var(--accent-primary);
+    transform: scale(1.1);
+}
+
+/* Icon spin animation */
+.icon-spin svg {
+    animation: spin 1s linear infinite;
+}
+
+/* === REDUCED MOTION === */
+
+@media (prefers-reduced-motion: reduce) {
+    .glass-light,
+    .glass-heavy,
+    .frosted-card {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: var(--bg-elevated);
+    }
+
+    .shimmer,
+    .icon-spin svg {
+        animation: none;
+    }
+}

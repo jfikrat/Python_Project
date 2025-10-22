@@ -1,0 +1,65 @@
+/* ==========================================
+   DARK MODE THEME
+   Monochromatic grey palette with minimal blue accent
+   Pure black background, OLED-friendly
+   ========================================== */
+
+[data-theme="dark"] {
+    /* === CORE GREY PALETTE === */
+    --grey-900: #000000;      /* Pure black - Main background */
+    --grey-800: #1C1C1C;      /* Slightly lifted surfaces */
+    --grey-700: #2C2C2C;      /* Card backgrounds */
+    --grey-600: #595959;      /* Elevated surfaces (from user palette) */
+    --grey-500: #7F7F7F;      /* Borders, dividers (from user palette) */
+    --grey-400: #A5A5A5;      /* Secondary text (from user palette) */
+    --grey-300: #CCCCCC;      /* Primary text (from user palette) */
+    --grey-200: #F2F2F2;      /* Brightest elements (from user palette) */
+    --grey-100: #FFFFFF;      /* Pure white - Highest contrast */
+
+    /* === BACKGROUNDS === */
+    --bg-primary: var(--grey-900);        /* #000000 */
+    --bg-secondary: var(--grey-800);      /* #1C1C1C */
+    --bg-tertiary: var(--grey-700);       /* #2C2C2C */
+    --bg-elevated: var(--grey-600);       /* #595959 */
+    --bg-input: var(--grey-800);          /* #1C1C1C */
+
+    /* === GLASSMORPHISM === */
+    --glass-bg: rgba(28, 28, 28, 0.7);
+    --glass-bg-heavy: rgba(89, 89, 89, 0.5);
+    --glass-border: rgba(204, 204, 204, 0.15);
+    --glass-blur: blur(20px) saturate(180%);
+
+    /* === TEXT COLORS === */
+    --text-primary: var(--grey-100);      /* #FFFFFF */
+    --text-secondary: var(--grey-300);    /* #CCCCCC */
+    --text-tertiary: var(--grey-400);     /* #A5A5A5 */
+    --text-disabled: var(--grey-500);     /* #7F7F7F */
+
+    /* === ACCENT (Monochrome Grey) === */
+    --accent-primary: var(--grey-300);    /* #CCCCCC - Light grey for emphasis */
+    --accent-hover: var(--grey-100);      /* #FFFFFF - White on hover */
+    --accent-light: rgba(204, 204, 204, 0.15);
+
+    /* === BORDERS & DIVIDERS === */
+    --border-primary: var(--grey-600);    /* #595959 */
+    --border-secondary: var(--grey-700);  /* #2C2C2C */
+    --border-focus: var(--grey-300);      /* Grey focus ring */
+
+    /* === GRADIENTS (Subtle Grey) === */
+    --gradient-bg: linear-gradient(135deg, #000000 0%, #1C1C1C 100%);
+    --gradient-surface: linear-gradient(135deg, #2C2C2C 0%, #595959 100%);
+    --gradient-accent: linear-gradient(135deg, #CCCCCC 0%, #F2F2F2 100%);
+
+    /* === SHADOWS === */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.7);
+    --shadow-accent: 0 4px 16px rgba(204, 204, 204, 0.2);
+
+    /* === STATUS COLORS === */
+    --success: #34C759;       /* Apple green */
+    --error: #FF453A;         /* Apple red */
+    --warning: #FF9F0A;       /* Apple orange */
+    --info: var(--accent-primary);
+}

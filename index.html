@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,36 +7,22 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/effects.css">
+    <link rel="stylesheet" href="/static/css/themes/theme-toggle.css">
     <link rel="stylesheet" href="/static/css/components.css">
     <link rel="stylesheet" href="/static/css/layout.css">
-
-    <style>
-        .mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-        }
-        .mode-toggle a {
-            background: rgba(255, 255, 255, 0.95);
-            color: #667eea;
-            padding: 10px 20px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        .mode-toggle a:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
-        }
-    </style>
 </head>
 <body>
-    <!-- Mode Toggle -->
-    <div class="mode-toggle">
-        <a href="/chat">🤖 Chat Modu</a>
+    <!-- Theme Controls -->
+    <div class="theme-controls">
+        <a href="/chat" class="mode-link">
+            <i data-lucide="bot"></i>
+            <span>Chat Modu</span>
+        </a>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <i data-lucide="sun" class="theme-icon sun-icon"></i>
+            <i data-lucide="moon" class="theme-icon moon-icon"></i>
+        </button>
     </div>
 
     <div class="container">
@@ -51,7 +37,9 @@
             <!-- Upload Area -->
             <div id="uploadArea" class="upload-area">
                 <input type="file" id="fileInput" accept="image/*">
-                <div class="upload-icon">📸</div>
+                <div class="upload-icon">
+                    <i data-lucide="upload-cloud"></i>
+                </div>
                 <div class="upload-text">Ürün fotoğrafını yükleyin</div>
                 <div class="upload-hint">Tıklayın veya sürükleyip bırakın (JPG, PNG, WEBP)</div>
             </div>
@@ -108,8 +96,18 @@
     </div>
 
     <!-- JavaScript -->
+    <script src="/static/js/theme-manager.js"></script>
     <script defer src="/static/js/api.js"></script>
     <script defer src="/static/js/ui.js"></script>
     <script defer src="/static/js/main.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        // Initialize Lucide icons after DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
