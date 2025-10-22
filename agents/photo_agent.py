@@ -107,9 +107,17 @@ STYLE GUIDELINES ({template['name_tr']}):
 - Arka plan: {template['background']}
 - Aksesuarlar: {template['props']}
 - Anahtar kelimeler: {', '.join(template['keywords'])}
-
-Tüm fikirler bu stil rehberine uygun olmalı.
 """
+            # Add model styling guidance if available in template
+            if 'model_styling' in template:
+                style_guide += f"""
+MODEL STYLING GUIDANCE (for this style):
+- Model clothing/styling: {template['model_styling']}
+- Hair & makeup: {template['model_hair_makeup']}
+- Pose & expression: {template['model_pose_direction']}
+"""
+            style_guide += "\nTüm fikirler bu stil rehberine uygun olmalı.\n"
+
 
         # Add model preference guidance
         model_guide = ""

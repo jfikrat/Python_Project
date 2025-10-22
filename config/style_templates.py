@@ -25,7 +25,10 @@ STYLE_TEMPLATES = {
         "props": "gold/silver accents, premium accessories, elegant items",
         "composition": "dramatic angles, depth, layered composition",
         "keywords": ["luxurious", "elegant", "premium", "high-end", "sophisticated", "exclusive"],
-        "description_tr": "Mermer zemin veya kadife kumaş üzerinde, altın aksesuarlar ile, dramatik aydınlatma"
+        "description_tr": "Mermer zemin veya kadife kumaş üzerinde, altın aksesuarlar ile, dramatik aydınlatma",
+        "model_styling": "high-end fashion (tailored suits, evening gowns, designer pieces), luxurious fabrics (silk, cashmere, leather), statement jewelry, elegant accessories, rich color palette (black, navy, burgundy, gold)",
+        "model_hair_makeup": "polished hair (sleek chignon, smooth blowout, elegant updo), sophisticated makeup (defined eyes, bold lips or natural elegance), groomed perfection",
+        "model_pose_direction": "confident powerful poses, elegant posture, refined hand placement, direct eye contact or contemplative gaze, commanding presence, regal body language"
     },
 
     "lifestyle": {
@@ -37,7 +40,10 @@ STYLE_TEMPLATES = {
         "props": "everyday items, hands in action, people using product",
         "composition": "candid shots, natural poses, environmental context",
         "keywords": ["lifestyle", "natural", "relatable", "authentic", "everyday", "real-life"],
-        "description_tr": "Gerçek hayat ortamında, doğal ışıkta, kullanım anında veya günlük hayattan bir sahne"
+        "description_tr": "Gerçek hayat ortamında, doğal ışıkta, kullanım anında veya günlük hayattan bir sahne",
+        "model_styling": "casual everyday clothing, comfortable fabrics (denim, cotton, knits), relaxed layering, neutral colors with pops of warmth, minimal accessories",
+        "model_hair_makeup": "natural hair (loose waves, messy bun, ponytail), minimal natural makeup, fresh-faced glow, effortless beauty",
+        "model_pose_direction": "candid relaxed poses, genuine smiles, natural movements, looking away or engaged in activity, comfortable body language"
     },
 
     "vintage": {
@@ -121,7 +127,10 @@ STYLE_TEMPLATES = {
         "props": "storytelling elements, thematic accessories",
         "composition": "creative angles, narrative-driven, artistic framing",
         "keywords": ["editorial", "magazine", "storytelling", "aspirational", "brand"],
-        "description_tr": "Dergi çekimi tarzında, hikaye anlatan, marka ruhunu yansıtan sahneler"
+        "description_tr": "Dergi çekimi tarzında, hikaye anlatan, marka ruhunu yansıtan sahneler",
+        "model_styling": "fashion-forward storytelling outfits, conceptual styling based on narrative, mix of high-low fashion, creative layering, thematic color schemes, artistic accessories that support the story",
+        "model_hair_makeup": "editorial creative styling (dramatic makeup, artistic hair, avant-garde or classic depending on story), makeup as storytelling tool, hair styled to match narrative mood",
+        "model_pose_direction": "expressive narrative poses, emotional storytelling through body language, dynamic movement or stillness based on concept, artistic hand gestures, fashion model techniques, magazine-worthy angles"
     },
 
     "studio_clean": {
