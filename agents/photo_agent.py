@@ -164,6 +164,18 @@ KATEGORI BEST PRACTICES ({category}):
 - Gösterilmesi gerekenler: {', '.join(cat_guide['must_show'])}
 - Kaçınılması gerekenler: {cat_guide['avoid']}
 """
+        # Add category-specific model usage if available and model preference is set
+        if 'model_usage' in cat_guide and model_preference == "with_model":
+            model_info = cat_guide['model_usage']
+            category_guide += f"""
+CATEGORY-SPECIFIC MODEL USAGE:
+- Importance: {model_info['importance']}
+- Recommended shot types:
+{chr(10).join(f"  * {shot}" for shot in model_info['shot_types'])}
+- Model diversity: {model_info['model_diversity']}
+- Styling notes: {model_info['styling_notes']}
+- Key angles: {', '.join(model_info['key_angles'])}
+"""
 
         system_msg = {
             "role": "system",
@@ -409,8 +421,13 @@ Prompt Yapısı Örneği:
             "    {\n"
             '      "index": 1,\n'
             '      "title": "kısa başlık",\n'
-            '      "style_description": "stil ve estetik açıklaması (örn: minimalist beyaz arka plan, dramatic lighting)",\n'
-            '      "gen_prompt": "detaylı görüntü üretim prompt\'u (İngilizce, DALL-E/Midjourney formatında)"\n'
+            '      "style_description": "stil ve estetik açıklaması",\n'
+            '      "gen_prompt": "detaylı görüntü üretim prompt\'u (İngilizce, DALL-E/Midjourney formatında)",\n'
+            '      "camera_details": "optional - kamera spesifikasyonları (örn: 50mm f/2.8, eye-level angle)",\n'
+            '      "negative_prompt": "optional - görüntüde olmaması gerekenler (örn: blurry, low quality, distorted)",\n'
+            '      "key_props": ["optional - array of key props/elements in shot"],\n'
+            '      "post_processing": "optional - önerilen post processing (örn: warm color grade, high contrast)",\n'
+            '      "story_element": "optional - bu shot\'ın hikayedeki rolü (örn: establishing mood, showing product detail)"\n'
             "    }\n"
             "  ]\n"
             "}\n\n"
@@ -418,7 +435,13 @@ Prompt Yapısı Örneği:
             f"Seçilen Fikir: {json.dumps(selected_idea, ensure_ascii=False)}\n"
             f"İstenen Adet: {count}\n\n"
             "Her prompt benzersiz açı, stil, ışık ve kompozisyon içermeli. "
-            "gen_prompt alanı İngilizce ve çok detaylı olmalı (ürün detayı, açı, ışık, ortam, stil, kalite anahtar kelimeleri)."
+            "gen_prompt alanı İngilizce ve çok detaylı olmalı (ürün detayı, açı, ışık, ortam, stil, kalite anahtar kelimeleri).\n\n"
+            "ENRICHED FIELDS GUIDANCE:\n"
+            "- camera_details: Extract camera specs from gen_prompt (lens, aperture, angle)\n"
+            "- negative_prompt: List what to avoid (blurry, distorted, low quality, extra limbs, bad anatomy, etc.)\n"
+            "- key_props: List 2-4 important props mentioned in the shot\n"
+            "- post_processing: Suggest color grading or editing style (warm tones, high contrast, matte finish, etc.)\n"
+            "- story_element: Explain this shot's narrative purpose (establishing environment, showing detail, conveying emotion, etc.)\n"
         )
 
         user_msg = {"role": "user", "content": user_text}

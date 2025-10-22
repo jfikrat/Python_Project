@@ -42,6 +42,13 @@ class ShotPlan(BaseModel):
     style_description: str = Field(..., description="Style and aesthetic description")
     gen_prompt: str = Field(..., description="Image generation prompt for DALL-E/Midjourney/SD")
 
+    # Optional enriched fields
+    camera_details: str | None = Field(None, description="Camera specs (lens, aperture, angle)")
+    negative_prompt: str | None = Field(None, description="What to avoid in generation (for SD/MJ)")
+    key_props: list[str] | None = Field(None, description="Important props or elements in the shot")
+    post_processing: str | None = Field(None, description="Suggested post-processing or editing style")
+    story_element: str | None = Field(None, description="Narrative or emotional element of this shot")
+
 
 class PlanResponse(BaseModel):
     """Response from plan generation endpoint."""

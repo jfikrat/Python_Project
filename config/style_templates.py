@@ -317,7 +317,20 @@ CATEGORY_GUIDELINES = {
         "focus": "texture, fit, movement, drape",
         "common_settings": ["studio white background", "outdoor lifestyle", "editorial dark mood"],
         "must_show": ["fabric detail and texture", "how it fits on body", "styling options"],
-        "avoid": "overly busy backgrounds that distract from clothing"
+        "avoid": "overly busy backgrounds that distract from clothing",
+        "model_usage": {
+            "importance": "ESSENTIAL - fashion must be shown on body to demonstrate fit and drape",
+            "shot_types": [
+                "Full-body shots showing silhouette and how garment fits",
+                "Half-body for tops/jackets showing drape and styling",
+                "Close-ups of fabric texture while worn (movement, drape)",
+                "Detail shots of construction while on body",
+                "Movement shots (walking, turning) to show flow"
+            ],
+            "model_diversity": "Show garment on different body types when possible",
+            "styling_notes": "Model styling should complement but not overpower garment",
+            "key_angles": ["front view", "side profile", "back view", "¾ turn", "movement sequence"]
+        }
     },
 
     "food": {
@@ -331,7 +344,20 @@ CATEGORY_GUIDELINES = {
         "focus": "design details, features, scale, interfaces",
         "common_settings": ["minimal clean background", "desk setup", "hands-on usage demo"],
         "must_show": ["ports and buttons", "size comparison object", "screen/display quality"],
-        "avoid": "cluttered backgrounds, poor lighting on screens"
+        "avoid": "cluttered backgrounds, poor lighting on screens",
+        "model_usage": {
+            "importance": "OPTIONAL BUT ADDS CONTEXT - hands/partial model for scale and usage demonstration",
+            "shot_types": [
+                "Hands interacting with device (typing, swiping, holding)",
+                "Over-shoulder shot showing screen in use",
+                "Person using device in lifestyle context (work, travel, home)",
+                "Hand holding device to show size/portability",
+                "Detail of finger on specific button/feature"
+            ],
+            "model_diversity": "Vary hand types, age indicators (watch, skin texture)",
+            "styling_notes": "Focus on device - model/hands should be secondary. Clean manicured hands for premium tech, natural for lifestyle",
+            "key_angles": ["hands-only closeup", "environmental usage context", "over-shoulder screen view"]
+        }
     },
 
     "home_decor": {
@@ -345,15 +371,44 @@ CATEGORY_GUIDELINES = {
         "focus": "details, craftsmanship, how to use/wear",
         "common_settings": ["flatlay composition", "on model/mannequin", "lifestyle in use"],
         "must_show": ["craftsmanship details", "size scale", "usage demonstration"],
-        "avoid": "unclear product details, poor focus"
+        "avoid": "unclear product details, poor focus",
+        "model_usage": {
+            "importance": "HIGHLY RECOMMENDED - accessories come alive when shown in use",
+            "shot_types": [
+                "BAGS: Model carrying/holding in real scenarios (street, cafe, commute)",
+                "BAGS: Close-up of model's hand on handle/strap showing scale",
+                "BAGS: Bag worn on shoulder/crossbody showing how it sits",
+                "BAGS: Open bag with model reaching inside (functionality)",
+                "WATCHES: On wrist in lifestyle context (checking time, gesture)",
+                "JEWELRY: Worn with appropriate styling, showing scale on body",
+                "SUNGLASSES: On face showing fit and style, outdoor context",
+                "SCARVES/BELTS: Styled on model showing drape and versatility"
+            ],
+            "model_diversity": "Vary hand/wrist sizes, skin tones, styling",
+            "styling_notes": "Focus on accessory but show enough context. For bags: model outfit should be neutral/complementary to let bag stand out",
+            "key_angles": ["product-focused with partial model", "lifestyle wider shot", "detail closeup while in use"]
+        }
     },
 
     "beauty": {
         "focus": "texture, color accuracy, application, results",
         "common_settings": ["clean white background", "lifestyle application", "before/after"],
         "must_show": ["true color/texture", "application method", "results on skin"],
-        "avoid": "color inaccuracy, poor skin tone representation"
-    }
+        "avoid": "color inaccuracy, poor skin tone representation",
+        "model_usage": {
+            "importance": "ESSENTIAL - beauty products must be shown on skin for color accuracy and application",
+            "shot_types": [
+                "Close-up of product application (hand applying to face)",
+                "Model's face showing makeup results with natural expression",
+                "Hand/arm swatch showing true color on skin",
+                "Before/after comparison on same model",
+                "Model using product in lifestyle context (morning routine, getting ready)"
+            ],
+            "model_diversity": "CRITICAL - show on diverse skin tones for inclusive representation",
+            "styling_notes": "Natural lighting for color accuracy, model makeup should showcase product not overpower it",
+            "key_angles": ["close-up face", "hand application detail", "full face result", "lifestyle usage"]
+        }
+    },
 }
 
 
